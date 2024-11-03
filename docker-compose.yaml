@@ -1,0 +1,41 @@
+services:
+    app:
+        build:
+            context: docker/app
+        volumes:
+            - ./:/app
+        restart: unless-stopped
+        tty: true
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+
+    nginx:
+        build:
+            context: docker/nginx
+        ports:
+            - "88:80"
+        volumes:
+            - ./:/app
+        depends_on:
+            - app
+        tty: true
+        restart: unless-stopped
+
+    database:
+        image: postgres:${POSTGRES_VERSION:-16}-alpine
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-app}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+            POSTGRES_USER: ${POSTGRES_USER:-app}
+        ports:
+            - "5436:5432"
+        healthcheck:
+            test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
+        volumes:
+            - db_data:/var/lib/postgresql/data:rw
+
+volumes:
+    db_data:
