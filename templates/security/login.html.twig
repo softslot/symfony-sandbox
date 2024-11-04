@@ -2,40 +2,70 @@
 
 {% block title %}Log in!{% endblock %}
 
+{% block header %}Login{% endblock %}
+
 {% block body %}
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
 
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-            </div>
-        {% else %}
-            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-            <label for="username">Email</label>
-            <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
-            <label for="password">Password</label>
-            <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
-
-            <input type="hidden" name="_csrf_token"
+    <div class="border border-gray-900/10 p-6 rounded bg-white w-50">
+        <form method="post" action="{{ path('app_login') }}">
+            <input type="hidden"
+                   name="_csrf_token"
                    value="{{ csrf_token('authenticate') }}"
             >
 
-            {#
-            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-            See https://symfony.com/doc/current/security/remember_me.html
+            <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                <div class="col-span-full">
+                    <label for="_username" class="block text-sm/6 font-medium text-gray-900">Email</label>
+                    <div class="mt-2">
+                        <input id="_username"
+                               name="_username"
+                               type="email"
+                               value="{{ last_username }}"
+                               placeholder="Email"
+                               autocomplete="email"
+                               class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+                        >
+                    </div>
+                </div>
 
-            <div class="checkbox mb-3">
-                <input type="checkbox" name="_remember_me" id="_remember_me">
-                <label for="_remember_me">Remember me</label>
+                <div class="col-span-full">
+                    <label for="_password" class="block text-sm/6 font-medium text-gray-900">Password</label>
+                    <div class="mt-2">
+                        <input id="_password"
+                               name="_password"
+                               type="password"
+                               placeholder="Password"
+                               autocomplete="password"
+                               class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+                        >
+                    </div>
+                </div>
+                <div class="col-span-full">
+                    <div class="relative flex gap-x-3">
+                        <div class="flex h-6 items-center">
+                            <input id="_remember_me"
+                                   name="_remember_me"
+                                   type="checkbox"
+                                   class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                            >
+                        </div>
+                        <div class="text-sm/6">
+                            <label for="_remember_me" class="font-medium text-gray-900">Remember me</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-full">
+                    <button type="submit"
+                            class="w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                        Sign in
+                    </button>
+                </div>
             </div>
-            #}
 
-            <button class="btn btn-lg btn-primary" type="submit">
-                Sign in
-            </button>
-        {% endif %}
-    </form>
+        </form>
+    </div>
 {% endblock %}

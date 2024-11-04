@@ -1,4 +1,4 @@
-init-project: docker-down-clear docker-pull docker-build docker-up composer-install
+init-project: docker-down-clear docker-pull docker-build docker-up composer-install migrate
 
 docker-down-clear:
 	docker compose down -v --remove-orphans
